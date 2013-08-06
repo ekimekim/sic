@@ -205,7 +205,7 @@ main(int argc, char *argv[]) {
 		}
 		if(FD_ISSET(0, &rd)) {
 			if(fgets(bufin, sizeof bufin, stdin) == NULL)
-				eprint("sic: broken pipe\n");
+				eprint("sic: end of input\n");
 			parsein(bufin);
 		}
 	}
