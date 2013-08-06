@@ -135,10 +135,11 @@ int
 main(int argc, char *argv[]) {
 	int i, c;
 	struct timeval tv;
-	const char *user = getenv("USER");
+	const char *user;
+	(user = getenv("IRC_NICK")) || (user = getenv("USER")) || (user = "unknown");
 	fd_set rd;
 
-	strlcpy(nick, user ? user : "unknown", sizeof nick);
+	strlcpy(nick, user, sizeof nick);
 	for(i = 1; i < argc; i++) {
 		c = argv[i][1];
 		if(argv[i][0] != '-' || argv[i][2])
