@@ -162,6 +162,11 @@ main(int argc, char *argv[]) {
 			eprint("usage: sic [-h host] [-p port] [-n nick] [-k keyword] [-v]\n");
 		}
 	}
+	/* prompt for password */
+	if(password && strcmp(password, "-") == 0) {
+		password = getpass("Password: ");
+		if(!password) perror("getpass() failed");
+	}
 	/* init */
 	i = dial(host, port);
 	srv = fdopen(i, "r+");
