@@ -8,7 +8,7 @@
 #include <time.h>
 #include <unistd.h>
 
-static char *host = "irc.oftc.net";
+static char *host = "irc.desertbus.org";
 static char *port = "6667";
 static char *password;
 static char nick[32];
