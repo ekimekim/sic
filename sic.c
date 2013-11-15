@@ -10,6 +10,8 @@
 
 static char *host = "irc.desertbus.org";
 static char *port = "6667";
+static char *email = "mikelang3000@gmail.com";
+static char *start_chan = "#desertbus";
 static char *password;
 static char nick[32];
 static char bufin[4096];
@@ -136,6 +138,7 @@ main(int argc, char *argv[]) {
 	int i, c;
 	struct timeval tv;
 	const char *user;
+	char *passmsg;
 	(user = getenv("IRC_NICK")) || (user = getenv("USER")) || (user = "unknown");
 	fd_set rd;
 
@@ -172,10 +175,20 @@ main(int argc, char *argv[]) {
 	i = dial(host, port);
 	srv = fdopen(i, "r+");
 	/* login */
-	if(password)
-		sout("PASS %s", password);
-	sout("NICK %s", nick);
 	sout("USER %s localhost %s :%s", nick, host, nick);
+	sout("NICK %s", nick);
+	if(password) {
+		if (asprintf(&passmsg, "login %s %s", email, password) < 0) {
+			eprint("Error constructing auth message:");
+			return 1;
+		}
+		privmsg("NickServ", passmsg);
+		free(passmsg);
+	}
+	if (start_chan) {
+		sout("JOIN %s", start_chan);
+		strlcpy(channel, start_chan, sizeof channel);
+	}
 	fflush(srv);
 	setbuf(stdout, NULL);
 	setbuf(srv, NULL);
