@@ -120,16 +120,24 @@ parsesrv(char *cmd) {
 	par = skip(cmd, ' ');
 	txt = skip(par, ':');
 	trim(par);
+	if(!strcmp("NICK", cmd) && !strcmp(usr, nick)) {
+		printf("Setting nick: %s, %s, %s", nick, par, txt);
+		strlcpy(nick, txt, sizeof nick);
+	}
 	if(!strcmp("PONG", cmd))
 		return;
 	if(!strcmp("PRIVMSG", cmd))
 		pout(par, "<%s> %s", usr, txt);
 	else if(!strcmp("PING", cmd))
 		sout("PONG %s", txt);
+	else if (   (!strcmp("QUIT", cmd))
+			|| (!strcmp("JOIN", cmd))
+			|| (!strcmp("MODE", cmd))
+			|| (!strcmp("NICK", cmd))
+			)
+		{}
 	else {
 		pout(usr, ">< %s (%s): %s", cmd, par, txt);
-		if(!strcmp("NICK", cmd) && !strcmp(usr, nick))
-			strlcpy(nick, txt, sizeof nick);
 	}
 }
 
