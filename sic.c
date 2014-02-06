@@ -172,10 +172,14 @@ main(int argc, char *argv[]) {
 		case 'd':
 			debug = 1;
 			break;
+		case 'c':
+			if(++i < argc)
+				strlcpy(channel, argv[i], sizeof channel);
+			break;
 		case 'v':
 			eprint("sic-"VERSION", © 2005-2012 Kris Maglione, Anselm R. Garbe, Nico Golde\n");
 		default:
-			eprint("usage: sic [-h host] [-p port] [-n nick] [-k keyword] [-d] [-v]\n");
+			eprint("usage: sic [-h host] [-p port] [-n nick] [-k keyword] [-c channel] [-d] [-v]\n");
 		}
 	}
 	/* prompt for password */
@@ -187,15 +191,17 @@ main(int argc, char *argv[]) {
 	i = dial(host, port);
 	srv = fdopen(i, "r+");
 	/* login */
-	sout("USER %s localhost %s :%s", nick, host, nick);
-	sout("NICK %s", nick);
 	if(password) {
 		sout("PASS %s", password);
 	}
+	sout("USER %s localhost %s :%s", nick, host, nick);
+	sout("NICK %s", nick);
 	if (start_chan) {
 		sout("JOIN %s", start_chan);
 		strlcpy(channel, start_chan, sizeof channel);
 	}
+	if(channel[0] != '\0')
+		sout("JOIN %s", channel);
 	fflush(srv);
 	setbuf(stdout, NULL);
 	setbuf(srv, NULL);
