@@ -8,6 +8,7 @@
 #include <time.h>
 #include <unistd.h>
 
+int debug = 0;
 static char *host = "irc.desertbus.org";
 static char *port = "6667";
 static char *start_chan = "#desertbus";
@@ -42,6 +43,7 @@ sout(char *fmt, ...) {
 	va_start(ap, fmt);
 	vsnprintf(bufout, sizeof bufout, fmt, ap);
 	va_end(ap);
+	if (debug) fprintf(stderr, "SEND: %s\n", bufout);
 	fprintf(srv, "%s\r\n", bufout);
 }
 
@@ -102,6 +104,8 @@ parsein(char *s) {
 
 static void
 parsesrv(char *cmd) {
+	if (debug) fprintf(stderr, "RECV: %s", cmd);
+
 	char *usr, *par, *txt;
 
 	usr = host;
@@ -165,10 +169,13 @@ main(int argc, char *argv[]) {
 		case 'k':
 			if(++i < argc) password = argv[i];
 			break;
+		case 'd':
+			debug = 1;
+			break;
 		case 'v':
 			eprint("sic-"VERSION", © 2005-2012 Kris Maglione, Anselm R. Garbe, Nico Golde\n");
 		default:
-			eprint("usage: sic [-h host] [-p port] [-n nick] [-k keyword] [-v]\n");
+			eprint("usage: sic [-h host] [-p port] [-n nick] [-k keyword] [-d] [-v]\n");
 		}
 	}
 	/* prompt for password */
