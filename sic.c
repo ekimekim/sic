@@ -73,8 +73,7 @@ parsein(char *s) {
 		switch(c) {
 		case 'j':
 			sout("JOIN %s", p);
-			if(channel[0] == '\0')
-				strlcpy(channel, p, sizeof channel);
+			strlcpy(channel, p, sizeof channel);
 			return;
 		case 'l':
 			s = eat(p, isspace, 1);
